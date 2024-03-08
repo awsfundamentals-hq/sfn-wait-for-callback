@@ -1,11 +1,11 @@
+import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
+import { SFNClient, StartExecutionCommand } from "@aws-sdk/client-sfn";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { ApiHandler } from "sst/node/api";
-import {
-  StartExecutionCommand,
-  SFNClient,
-  ListExecutionsCommand,
-} from "@aws-sdk/client-sfn";
+import { Table } from "sst/node/table";
 
 const sfn = new SFNClient({});
+const ddb = new DynamoDBClient({});
 
 const STATE_MACHINE_ARN = process.env.STATE_MACHINE_ARN;
 if (!STATE_MACHINE_ARN) {
@@ -68,18 +68,19 @@ async function invokeNewStepFunction(title: string) {
 async function getStepFunctionInvocations() {
   console.log("Getting Step Function Invocations");
 
-  const command = new ListExecutionsCommand({
-    stateMachineArn: STATE_MACHINE_ARN,
-    statusFilter: "RUNNING",
+  // Scan DynamoDB Table
+  const command = new ScanCommand({
+    TableName: Table.RequestsTable.tableName,
   });
 
-  const response = await sfn.send(command);
+  const response = await ddb.send(command);
+
+  console.log("Response: ", response);
+
+  const unmarshalledItems = response.Items?.map((item) => unmarshall(item));
 
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: "Got Step Function Invocations",
-      executions: response.executions,
-    }),
+    body: JSON.stringify(unmarshalledItems),
   };
 }

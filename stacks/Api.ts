@@ -13,5 +13,9 @@ export function Api({ stack }: StackContext) {
     // logFormat: "JSON",
   });
 
+  stack.addOutputs({
+    ApiEndpoint: apiLambda.url,
+  });
+
   return { apiLambda };
 }

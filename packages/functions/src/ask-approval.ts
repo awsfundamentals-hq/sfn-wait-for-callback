@@ -3,6 +3,12 @@ import { Table } from "sst/node/table";
 
 const client = new DynamoDBClient();
 
+const APPROVAL_RECEIVER_URL = process.env.APPROVAL_RECEIVER_URL;
+
+if (!APPROVAL_RECEIVER_URL) {
+  throw new Error("APPROVAL_RECEIVER_URL is required");
+}
+
 type Event = {
   taskToken: string;
   executionArn: string;
@@ -37,7 +43,7 @@ export const handler = async (event: Event) => {
 };
 
 function buildUrls(taskToken: string) {
-  const url = new URL("APPROVAL_RECEIVER_URL");
+  const url = new URL(APPROVAL_RECEIVER_URL!);
   url.searchParams.append("task-token", taskToken);
   const approveUrl = new URL(url.toString());
   approveUrl.searchParams.append("decision", "approved");

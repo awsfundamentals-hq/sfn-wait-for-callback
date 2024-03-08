@@ -9,6 +9,7 @@
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.529.1",
     "@aws-sdk/client-sfn": "^3.525.0",
+    "@aws-sdk/util-dynamodb": "^3.529.1",
     "@types/aws-lambda": "^8.10.136",
     "@types/node": "^20.11.25",
     "sst": "^2.40.6",

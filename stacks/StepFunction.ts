@@ -3,7 +3,7 @@ import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { Function, StackContext, use } from "sst/constructs";
 import { RequestTable } from "./Table";
 import { Api } from "./Api";
-
+import * as iam from "aws-cdk-lib/aws-iam";
 export function StepFunction({ stack }: StackContext) {
   const { requestsTable } = use(RequestTable);
   const { apiLambda } = use(Api);
@@ -15,9 +15,12 @@ export function StepFunction({ stack }: StackContext) {
   });
 
   // Lambda function to notify admin -- stack is actual just a mock to wait for the callback
-  const notifyLambda = new Function(stack, "NotifyLambda", {
+  const saveApprovalLambda = new Function(stack, "NotifyLambda", {
     handler: "packages/functions/src/ask-approval.handler",
-    bind: [requestsTable, approvalReceiverLambda],
+    bind: [requestsTable],
+    environment: {
+      APPROVAL_RECEIVER_URL: approvalReceiverLambda.url!,
+    },
   });
 
   // Step Function
@@ -25,7 +28,7 @@ export function StepFunction({ stack }: StackContext) {
     stack,
     "Ask For Manual Approval",
     {
-      lambdaFunction: notifyLambda,
+      lambdaFunction: saveApprovalLambda,
       integrationPattern: sfn.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
       payload: sfn.TaskInput.fromObject({
         taskToken: sfn.JsonPath.taskToken,
@@ -65,6 +68,16 @@ export function StepFunction({ stack }: StackContext) {
   stateMachine.grantStartExecution(apiLambda);
   stateMachine.grantRead(apiLambda);
   apiLambda.addEnvironment("STATE_MACHINE_ARN", stateMachine.stateMachineArn);
+
+  // This is far away from best practice (see *) but CloudFormation just sucks with Cyclical Dependencies so I don't want to spend any more time on this
+  // Don't do the star on prod. I'm sorry IAM God.
+  approvalReceiverLambda.addToRolePolicy(
+    new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ["states:SendTaskSuccess"],
+      resources: ["*"],
+    })
+  );
 
   return { stateMachine };
 }
