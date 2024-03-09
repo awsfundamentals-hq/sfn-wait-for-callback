@@ -10,13 +10,16 @@ export function Frontend({ stack }: StackContext) {
     throw new Error("Api URL is required");
   }
 
-  new NextjsSite(stack, "NextjsSite", {
-    path: "frontend",
+  const site = new NextjsSite(stack, "NextjsSite", {
+    path: "packages/frontend",
     environment: {
       STATE_MACHINE_ARN: stateMachine.stateMachineArn,
       // Can't bind it to the page because I also need it on client-side
       NEXT_PUBLIC_API_URL: apiLambda.url,
     },
-    openNextVersion: "2.3.7",
+  });
+
+  stack.addOutputs({
+    FrontendUrl: site.url,
   });
 }

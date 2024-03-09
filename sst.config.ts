@@ -12,6 +12,10 @@ export default {
     };
   },
   stacks(app) {
+    app.setDefaultFunctionProps({
+      runtime: "nodejs18.x",
+    });
+
     app.stack(RequestTable);
     app.stack(Api);
     app.stack(StepFunction);

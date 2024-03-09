@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "sst bind next dev",
-    "build": "next build",
+    "build": "sst bind next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next .open-next node_modules"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.0.2",
@@ -14,16 +15,16 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.352.0",
-    "next": "14.1.2",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "13.5.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "18.2.55",
+    "@types/react-dom": "18.2.19",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.2",

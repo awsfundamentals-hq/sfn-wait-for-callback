@@ -3,20 +3,25 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "dev": "sst dev",
     "build": "sst build",
     "deploy": "sst deploy",
+    "deploy:prod": "sst deploy --stage prod",
+    "lint": "pnpm --recursive run lint",
+    "clean": "rm -rf ./node_modules && pnpm --recursive run clean",
     "remove": "sst remove",
     "console": "sst console",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "sst": "^2.40.6",
-    "aws-cdk-lib": "2.124.0",
-    "constructs": "10.3.0",
-    "typescript": "^5.3.3",
-    "@tsconfig/node18": "^18.2.2"
+    "sst": "2.24.27",
+    "aws-cdk-lib": "2.91.0",
+    "constructs": "10.2.69",
+    "typescript": "5.0.4"
   },
   "workspaces": [
     "packages/*"
