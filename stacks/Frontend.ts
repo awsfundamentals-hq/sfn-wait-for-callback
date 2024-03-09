@@ -17,5 +17,6 @@ export function Frontend({ stack }: StackContext) {
       // Can't bind it to the page because I also need it on client-side
       NEXT_PUBLIC_API_URL: apiLambda.url,
     },
+    openNextVersion: "2.3.7",
   });
 }
