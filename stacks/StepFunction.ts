@@ -12,6 +12,7 @@ export function StepFunction({ stack }: StackContext) {
   const approvalReceiverLambda = new Function(stack, "ApprovalReceiverLambda", {
     handler: "packages/functions/src/approval-receiver.handler",
     url: true,
+    bind: [requestsTable],
   });
 
   // Lambda function to notify admin -- stack is actual just a mock to wait for the callback

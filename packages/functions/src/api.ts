@@ -28,12 +28,7 @@ export const handler = ApiHandler(async (_evt) => {
         };
       }
 
-      await invokeNewStepFunction(body.title);
-    case "/continue":
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: "Continued Step Function" }),
-      };
+      return await invokeNewStepFunction(body.title);
     case "/invocations":
       return await getStepFunctionInvocations();
     default:

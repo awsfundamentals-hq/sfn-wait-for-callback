@@ -1,6 +1,8 @@
 import React from "react";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
-
+import { Label } from "@/components/ui/label";
+import { CardTitle, CardHeader, CardFooter, Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 type Execution = {
   id: string;
   stateMachineArn: string;
@@ -36,39 +38,51 @@ export default function Admin({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div className="flex flex-col space-y-4">
-      {executions.map((item) => (
-        <div
-          key={item.id}
-          className="flex items-center justify-between p-4 border border-gray-200 rounded-lg shadow-sm bg-white"
-        >
-          <div className="flex items-center space-x-4">
-            <h2 className="text-lg font-semibold">
-              {item.title || "Untitled"}
-            </h2>
-            <a
-              href={item.link}
-              className="text-blue-500 hover:text-blue-600"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Link to Step Function
-            </a>
-          </div>
-          <div className="flex items-center space-x-2">
-            <a
-              className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
-              href={item.approveUrl}
+      {executions.map((execution) => (
+        <Card className="w-full" key={execution.id}>
+          <CardHeader className="flex-col">
+            <div className="space-y-1">
+              <Label className="text-sm" htmlFor="title">
+                Title: {execution.title}
+              </Label>
+              <CardTitle className="text-base">
+                Workflow Step: Check if title is allowed
+              </CardTitle>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs">
+                This is a step function waiting for a callback token. Approve it
+                if the title looks fine. Reject it if it is not fine.
+              </p>
+            </div>
+            <div className="space-y-1">
+              <a
+                className="text-sm font-medium text-cyan-700 underline dark:text-cyan-400"
+                href={execution.link}
+              >
+                View in Step Function
+              </a>
+            </div>
+          </CardHeader>
+          <CardFooter className="flex gap-2">
+            <Button
+              className="button"
+              onClick={() => {
+                window.open(execution.approveUrl, "_blank");
+              }}
             >
               Approve
-            </a>
-            <a
-              className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
-              href={item.rejectUrl}
+            </Button>
+            <Button
+              className="button button-outline"
+              onClick={() => {
+                window.open(execution.rejectUrl, "_blank");
+              }}
             >
-              Decline
-            </a>
-          </div>
-        </div>
+              Reject
+            </Button>
+          </CardFooter>
+        </Card>
       ))}
     </div>
   );
