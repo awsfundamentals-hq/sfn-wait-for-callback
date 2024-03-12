@@ -13,14 +13,20 @@ export function StepFunction({ stack }: StackContext) {
     handler: "packages/functions/src/approval-receiver.handler",
     url: true,
     bind: [requestsTable],
+    // Adding it as an .env var as well because I need to use an older SST Version and I can't import the binding rn
+    environment: {
+      REQUESTS_TABLE_NAME: requestsTable.tableName,
+    },
   });
 
   // Lambda function to notify admin -- stack is actual just a mock to wait for the callback
   const saveApprovalLambda = new Function(stack, "NotifyLambda", {
     handler: "packages/functions/src/ask-approval.handler",
     bind: [requestsTable],
+
     environment: {
       APPROVAL_RECEIVER_URL: approvalReceiverLambda.url!,
+      REQUESTS_TABLE_NAME: requestsTable.tableName,
     },
   });
 
@@ -51,8 +57,7 @@ export function StepFunction({ stack }: StackContext) {
         new sfn.Choice(stack, "Approved?")
           .when(
             sfn.Condition.booleanEquals("$.isApproved", true),
-            mockSaveArticle,
-            { comment: "Approved!" }
+            mockSaveArticle
           )
           .otherwise(
             new sfn.Pass(stack, "Article Rejected - Inform user - Mock")

@@ -14,7 +14,6 @@ export function Frontend({ stack }: StackContext) {
     path: "packages/frontend",
     environment: {
       STATE_MACHINE_ARN: stateMachine.stateMachineArn,
-      // Can't bind it to the page because I also need it on client-side
       NEXT_PUBLIC_API_URL: apiLambda.url,
     },
   });

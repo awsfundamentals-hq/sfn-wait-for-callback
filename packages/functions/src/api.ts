@@ -2,7 +2,6 @@ import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { SFNClient, StartExecutionCommand } from "@aws-sdk/client-sfn";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { ApiHandler } from "sst/node/api";
-import { Table } from "sst/node/table";
 
 const sfn = new SFNClient({});
 const ddb = new DynamoDBClient({});
@@ -65,7 +64,7 @@ async function getStepFunctionInvocations() {
 
   // Scan DynamoDB Table
   const command = new ScanCommand({
-    TableName: Table.RequestsTable.tableName,
+    TableName: process.env.REQUESTS_TABLE_NAME!,
   });
 
   const response = await ddb.send(command);

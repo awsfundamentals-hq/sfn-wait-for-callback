@@ -21,8 +21,6 @@ type Event = {
 export const handler = async (event: Event) => {
   console.log("Event: ", event);
 
-  const tableName = Table.RequestsTable.tableName;
-
   const { approveUrl, rejectUrl } = buildUrls(
     event.taskToken,
     event.executionArn
@@ -32,7 +30,7 @@ export const handler = async (event: Event) => {
   console.log("Reject URL: ", rejectUrl.toString());
 
   const command = new PutItemCommand({
-    TableName: tableName,
+    TableName: process.env.REQUESTS_TABLE_NAME!,
     Item: {
       id: { S: event.executionArn },
       approveUrl: { S: approveUrl.toString() },

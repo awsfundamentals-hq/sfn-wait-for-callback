@@ -10,7 +10,10 @@ export function Api({ stack }: StackContext) {
       cors: true,
     },
     bind: [requestsTable],
-    // logFormat: "JSON",
+    // Adding it as an .env var as well because I need to use an older SST Version and I can't import the binding rn
+    environment: {
+      REQUESTS_TABLE_NAME: requestsTable.tableName,
+    },
   });
 
   stack.addOutputs({

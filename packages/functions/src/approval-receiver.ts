@@ -1,7 +1,6 @@
-import { ApiHandler } from "sst/node/api";
-import { Table } from "sst/node/table";
-import { DynamoDBClient, DeleteItemCommand } from "@aws-sdk/client-dynamodb";
+import { DeleteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { SFNClient, SendTaskSuccessCommand } from "@aws-sdk/client-sfn";
+import { ApiHandler } from "sst/node/api";
 const sfn = new SFNClient();
 const ddb = new DynamoDBClient();
 
@@ -36,7 +35,7 @@ export const handler = ApiHandler(async (_evt) => {
 
   // Remove DynamoDB Item with executionArn
   const deleteCommand = new DeleteItemCommand({
-    TableName: Table.RequestsTable.tableName,
+    TableName: process.env.REQUESTS_TABLE_NAME,
     Key: { id: { S: executionArn } },
   });
 
