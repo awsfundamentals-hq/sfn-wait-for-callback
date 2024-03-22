@@ -75,8 +75,6 @@ export function StepFunction({ stack }: StackContext) {
   stateMachine.grantRead(apiLambda);
   apiLambda.addEnvironment("STATE_MACHINE_ARN", stateMachine.stateMachineArn);
 
-  // This is far away from best practice (see *) but CloudFormation just sucks with Cyclical Dependencies so I don't want to spend any more time on this
-  // Don't do the star on prod. I'm sorry IAM God.
   approvalReceiverLambda.addToRolePolicy(
     new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
